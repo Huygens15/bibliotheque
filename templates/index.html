@@ -1,0 +1,79 @@
+{%extends 'base.html'%}
+{% block title %}Tableau de bord{% endblock %}
+
+{%block content%}
+<div class="page-header">
+    <h1><i class='bx bxs-dashboard'></i> Tableau de bord</h1>
+    <p>Bienvenue dans votre système de gestion</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <span class="stat-icon"><i class='bx bxs-book'></i></span>
+        <span class="stat-value">{{ nb_livres }}</span>
+        <span class="stat-label">Livres au total</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon"><i class='bx bxs-check-square'></i></span>
+        <span class="stat-value"> {{nb_disponibles}} </span>
+        <span class="stat-label">Livres disponibles</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon"><i class='bx bxs-group'></i></span>
+        <span class="stat-value"> {{nb_membres}} </span>
+        <span class="stat-label">Membres inscrits</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon"><i class='bx bx-loader' ></i></span>
+        <span class="stat-value"> {{nb_emprunts}} </span>
+        <span class="stat-label">Emprunts en cours</span>
+    </div>
+
+    <div class="stat-card stat-card-warning">
+        <span class="stat-icon"><i class='bx bxs-error'></i></span>
+        <span class="stat-value">{{ nb_retards }}</span>
+        <span class="stat-label">Emprunts en retard</span>
+    </div>
+
+</div>
+
+<!-- Derniers emprunts -->
+<div class="card">
+    <div class="card-title">Derniers emprunts</div>
+    {% if derniers_emprunts %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Livre</th>
+                <th>Membre</th>
+                <th>Date emprunt</th>
+                <th>Retour prévu</th>
+                <th>Statut</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in derniers_emprunts %}
+            <tr>
+                <td>{{ e['id'] }}</td>
+                <td>{{ e['titre'] }}</td>
+                <td>{{ e['membre_nom'] }}</td>
+                <td>{{ e['date_emprunt'] }}</td>
+                <td>{{ e['date_retour_prevue'] }}</td>
+                <td>
+                    {% if e['statut'] == 'en_cours' %}
+                        <span class="badge badge-success">En cours</span>
+                    {% else %}
+                        <span class="badge badge-error">Retourné</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p class="empty-message">Aucun emprunt enregistré.</p>
+    {% endif %}
+</div>
+
+{%endblock%}

@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Utilisateurs{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class='bx bxs-user'></i> Utilisateurs</h1>
+    <p>Gestion des comptes d'accès au système</p>
+</div>
+
+<!-- Card : Ajouter un utilisateur -->
+<div class="card">
+    <div class="card-title">Ajouter un compte</div>
+    <form method="POST" action="{{ url_for('ajouter_utilisateur') }}">
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Nom complet</label>
+                <input type="text" name="nom" placeholder="Nom et prénom" required>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="email@exemple.com" required>
+            </div>
+            <div class="form-group">
+                <label>Mot de passe</label>
+                <input type="password" name="mot_de_passe" placeholder="••••••••" required>
+            </div>
+            <div class="form-group">
+                <label>Rôle</label>
+                <select name="role">
+                    <option value="gerant">Gérant</option>
+                    <option value="admin">Administrateur</option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Créer le compte</button>
+    </form>
+</div>
+
+<!-- Card : Liste des utilisateurs -->
+<div class="card">
+    <div class="card-title">Comptes existants ({{ utilisateurs|length }})</div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Rôle</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in utilisateurs %}
+            <tr>
+                <td>{{ u['nom'] }}</td>
+                <td>{{ u['email'] }}</td>
+                <td>
+                    {% if u['role'] == 'admin' %}
+                        <span class="badge badge-admin">Admin</span>
+                    {% else %}
+                        <span class="badge badge-gerant">Gérant</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if u['id'] != session['utilisateur_id'] %}
+                    <form method="POST" action="{{ url_for('supprimer_utilisateur', id=u['id']) }}">
+                        <button type="submit" class="btn btn-danger"
+                            onclick="return confirm('Supprimer ce compte ?')">
+                            Supprimer
+                        </button>
+                    </form>
+                    {% else %}
+                        <span style="color: var(--text-secondary); font-size: 0.85rem;">Votre compte</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

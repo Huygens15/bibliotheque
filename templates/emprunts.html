@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Emprunts{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class='bx bxs-user-check'></i> Emprunts</h1>
+    <p>Gestion des emprunts de la bibliothèque</p>
+</div>
+
+<!-- Card : Nouvel emprunt -->
+<div class="card">
+    <div class="card-title">Nouvel emprunt</div>
+    <form method="POST" action="{{ url_for('emprunter') }}">
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Livre</label>
+                <select name="isbn" required>
+                    <option value="">Choisir un livre</option>
+                    {% for livre in livres_dispo %}
+                        <option value="{{ livre['isbn'] }}">{{ livre['titre'] }} ({{ livre['isbn'] }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Membre</label>
+                <select name="num_membre" required>
+                    <option value="">Choisir un membre</option>
+                    {% for membre in tous_membres %}
+                        <option value="{{ membre['numero'] }}">{{ membre['prenom'] }} {{ membre['nom'] }} ({{ membre['numero'] }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Enregistrer l'emprunt</button>
+    </form>
+</div>
+
+<!-- Recherche et filtres -->
+<div class="card">
+    <form method="GET" action="{{ url_for('emprunts') }}">
+        <div class="search-bar">
+            <input type="text" name="q" placeholder="Rechercher par titre, membre ou ID..."
+                value="{{ recherche }}">
+            <select name="filtre">
+                <option value="tous"      {{ 'selected' if filtre == 'tous' }}>Tous</option>
+                <option value="en_cours"  {{ 'selected' if filtre == 'en_cours' }}>En cours</option>
+                <option value="retournes" {{ 'selected' if filtre == 'retournes' }}>Retournés</option>
+                <option value="retard"    {{ 'selected' if filtre == 'retard' }}>En retard</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+            {% if recherche or filtre != 'tous' %}
+                <a href="{{ url_for('emprunts') }}" class="btn btn-secondary">Effacer</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+<!-- Chadrac Huygens -->
+
+<!-- Card : Liste des emprunts -->
+<div class="card">
+    <div class="card-title">Emprunts en cours ({{ emprunts|length }})</div>
+    {% if emprunts %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Livre</th>
+                <th>Membre</th>
+                <th>Date emprunt</th>
+                <th>Retour prévu</th>
+                <th>Statut</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in emprunts %}
+            {% set en_retard = e['statut'] == 'en_cours' and e['date_retour_prevue'] < aujourd_hui %}
+            <tr class="{{ 'retard' if en_retard else '' }}"></tr>
+                <td>{{ e['id'] }}</td>
+                <td>{{ e['titre'] }}</td>
+                <td>{{ e['membre_nom'] }}</td>
+                <td>{{ e['date_emprunt'] }}</td>
+                <td>{{ e['date_retour_prevue'] }}</td>
+                <td>
+                    {% if e['statut'] == 'en_cours' and e['date_retour_prevue'] < aujourd_hui %}
+                        <span class="badge badge-warning">En retard</span>
+                    {% elif e['statut'] == 'en_cours' %}
+                        <span class="badge badge-success">En cours</span>
+                    {% else %}
+                        <span class="badge badge-error">Retourné</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if e['statut'] == 'en_cours' %}
+                    <form method="POST" action="{{ url_for('retourner') }}">
+                        <input type="hidden" name="id_emprunt" value="{{ e['id'] }}">
+                        <button type="submit" class="btn btn-primary"
+                            onclick="return confirm('Confirmer le retour ?')">
+                            Retourner
+                        </button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p class="empty-message">Aucun emprunt enregistré.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Membres{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class='bx bxs-group'></i> Membres</h1>
+    <p>Gestion des membres de la bibliothèque</p>
+</div>
+
+<!-- Card : Ajouter un membre -->
+<div class="card">
+    <div class="card-title">Inscrire un membre</div>
+    <form method="POST" action="{{ url_for('ajouter_membre') }}">
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Nom</label>
+                <input type="text" name="nom" placeholder="Nom de famille" required>
+            </div>
+            <div class="form-group">
+                <label>Prénom</label>
+                <input type="text" name="prenom" placeholder="Prénom" required>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="email@exemple.com" required>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Inscrire</button>
+    </form>
+</div>
+
+<!-- Recherche -->
+<div class="card">
+    <form method="GET" action="{{ url_for('membres') }}">
+        <div class="search-bar">
+            <input type="text" name="q" placeholder="Rechercher par nom, prénom, email ou numéro..."
+                value="{{ recherche }}">
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+            {% if recherche %}
+                <a href="{{ url_for('membres') }}" class="btn btn-secondary">✖ Effacer</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<!-- Card : Liste des membres -->
+<div class="card">
+    <div class="card-title">Liste des membres ({{ membres|length }})</div>
+    {% if membres %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Numéro</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for membre in membres %}
+            <tr>
+                <td>{{ membre['numero'] }}</td>
+                <td>{{ membre['nom'] }}</td>
+                <td>{{ membre['prenom'] }}</td>
+                <td>{{ membre['email'] }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('supprimer_membre', numero=membre['numero']) }}">
+                        <button type="submit" class="btn btn-danger"
+                            onclick="return confirm('Supprimer ce membre ?')">
+                            supprimer
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p class="empty-message">Aucun membre inscrit.</p>
+    {% endif %}
+</div>
+{% endblock %}

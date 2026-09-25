@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Catalogue{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>🗂️ Catalogue</h1>
+    <p>Tous les livres disponibles dans la bibliothèque</p>
+</div>
+
+{% if livres_par_categorie %}
+    {% for categorie, livres in livres_par_categorie.items() %}
+    <div class="card">
+        <div class="card-title">📂 {{ categorie }} ({{ livres|length }} livre(s))</div>
+        <div class="catalogue-grid">
+            {% for livre in livres %}
+            <div class="livre-card">
+                <div class="livre-card-header">
+                    <span class="livre-icon">📖</span>
+                    {% if livre['disponible'] %}
+                        <span class="badge badge-success">Disponible</span>
+                    {% else %}
+                        <span class="badge badge-error">Emprunté</span>
+                    {% endif %}
+                </div>
+                <div class="livre-titre">{{ livre['titre'] }}</div>
+                <div class="livre-auteur">✍️ {{ livre['auteur'] }}</div>
+                {% if livre['description'] %}
+                    <div class="livre-description">{{ livre['description'] }}</div>
+                {% endif %}
+                <div class="livre-isbn">ISBN : {{ livre['isbn'] }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="card">
+        <p class="empty-message">Aucun livre dans le catalogue.</p>
+    </div>
+{% endif %}
+{% endblock %}

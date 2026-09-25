@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> {% block title%}Bibliothèque{%endblock%}</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+        <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/library.png') }}">
+
+</head>
+<body>
+    <!-- Barre de côté  -->
+    <aside class="sidebar">
+        <div class="sidebar-logo"><i class='bx bx-library'></i>Bibliothèque</div>
+        <nav>
+            <a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' else '' }}">
+                <span class="icon"><i class='bx bxs-dashboard'></i></span>Tableau de bord
+            </a>
+            <a href="{{ url_for('livres') }}" class="{{ 'active' if request.endpoint == 'livres' else '' }}">
+                <span class="icon"><i class='bx bxs-book'></i></span>Livres
+            </a>
+            <a href="{{ url_for('membres') }}" class="{{ 'active' if request.endpoint == 'membres' else '' }}">
+                <span class="icon"><i class='bx bxs-group'></i></span>Membres
+            </a>
+            <a href="{{ url_for('emprunts') }}" class="{{ 'active' if request.endpoint == 'emprunts' else '' }}">
+                <span class="icon"><i class='bx bxs-user-check'></i></span>Emprunts
+            </a>
+            <a href="{{ url_for('catalogue') }}" class="{{ 'active' if request.endpoint == 'catalogue' else '' }}">
+                <span class="icon"><i class='bx bx-library'></i></span>Catalogue
+            </a>
+
+            {% if session.get('utilisateur_role') == 'admin' %}
+            <a href="{{ url_for('utilisateurs') }}" class="{{ 'active' if request.endpoint == 'utilisateurs' else '' }}">
+                <span class="icon"><i class='bx bxs-user'></i></span>Utilisateurs
+            </a>
+            {% endif %}
+        </nav>
+
+        <!-- Infos utilisateur + déconnexion -->
+        <div class="sidebar-footer">
+            <div class="sidebar-user"><i class='bx bx-user'></i> {{ session['utilisateur_nom'] }}</div>
+            <a href="{{ url_for('deconnexion') }}" class="btn-logout">
+                <i class='bx bx-log-out'></i> Déconnexion
+            </a>
+        </div>
+    </aside>
+
+    <!-- Contenu principal -->
+    <main class="main-content">
+        <!-- Messages flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {%block content%}{%endblock%}
+    </main>
+</body>
+</html>

@@ -1,0 +1,38 @@
+ <!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - Bibliothèque</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="login-body">
+
+    <div class="login-container">
+        <div class="login-logo"><i class='bx bx-library'></i></div>
+        <h1 class="login-title">Bibliothèque</h1>
+        <p class="login-subtitle">Connectez-vous pour accéder au système</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('connexion') }}" class="login-form">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="email@exemple.com" required>
+            </div>
+            <div class="form-group">
+                <label>Mot de passe</label>
+                <input type="password" name="mot_de_passe" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">Se connecter</button>
+        </form>
+    </div>
+
+</body>
+</html>
