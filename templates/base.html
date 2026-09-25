@@ -11,7 +11,7 @@
 </head>
 <body>
     <!-- Barre de côté  -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-logo"><i class='bx bx-library'></i>Bibliothèque</div>
         <nav>
             <a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' else '' }}">
@@ -46,8 +46,20 @@
         </div>
     </aside>
 
+    <!-- Overlay pour fermer la sidebar sur mobile -->
+    <div class="overlay" id="overlay"></div>
+
     <!-- Contenu principal -->
     <main class="main-content">
+        
+        <!-- Navbar mobile -->
+        <div class="mobile-navbar">
+            <button class="hamburger" id="hamburger">
+                <i class='bx bx-menu'></i>
+            </button>
+            <span class="mobile-title">Bibliothèque</span>
+        </div>
+
         <!-- Messages flash -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -58,5 +70,6 @@
         {% endwith %}
         {%block content%}{%endblock%}
     </main>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
