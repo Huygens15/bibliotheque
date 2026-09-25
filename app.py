@@ -3,6 +3,7 @@ from database import init_db, get_db
 from functools import wraps
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
+import sqlite3
 
 # protection des pages 
 def login_required(f):
@@ -33,6 +34,9 @@ app.secret_key = 'bibliotheque_secret_2024'
 # @app.before_request
 # def setup():
 #     init_db()
+# Initialisation de la base au démarrage de l'app
+with app.app_context():
+    init_db()
 
 @app.route('/')
 @login_required
@@ -405,6 +409,6 @@ def catalogue():
 
 
 if __name__ == '__main__':
-    init_db()
+    # init_db()
     app.run(debug=True,host='0.0.0.0', port=5000)
     
