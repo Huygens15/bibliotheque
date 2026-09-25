@@ -2,7 +2,9 @@ import sqlite3
 import os
 from werkzeug.security import generate_password_hash
 
-DB_PATH = os.path.join(os.path.dirname(__file__),'data','bibliotheque.db')
+# Chemin compatible local et production
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, 'data', 'bibliotheque.db')
 
 def get_db():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
