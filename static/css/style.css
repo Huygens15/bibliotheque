@@ -692,6 +692,15 @@ i {
         max-width: 100%;
     }
 
+    .sidebar {
+        overflow-y: auto;
+    }
+
+    .sidebar-footer {
+        position: relative;
+        margin-top: 24px;
+    }
+
     .form-group input {
         width: 100%;
         max-width: 100%;
